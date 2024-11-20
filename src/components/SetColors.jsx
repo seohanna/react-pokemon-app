@@ -1,3 +1,5 @@
+import React from "react";
+
 export function SetColors() {
     return (
         <>
@@ -11,6 +13,7 @@ export function SetColors() {
             <div className="text-poison bg-poison"></div>
             <div className="text-ground bg-ground"></div>
             <div className="text-flying bg-flying"></div>
+            <div className="text-psychic bg-psychic "></div>
             <div className="text-bug bg-bug"></div>
             <div className="text-rock bg-rock"></div>
             <div className="text-ghost bg-ghost"></div>
