@@ -1,15 +1,23 @@
-import React, { useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 
+interface BaseStatProps {
+    valueStat: number;
+    nameStat: string;
+    type: string;
+}
 
-const BaseStat = ({ valueStat, nameStat, type }) => {
+const BaseStat = ({ valueStat, nameStat, type }: BaseStatProps) => {
     const bg = `bg-${type}`;
 
-    const ref = useRef(null);
+    const ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const setValueStat = ref.current;
         const calc = valueStat * (100/ 255);
-        setValueStat.style.width = calc + '%';
+        // 타입가드
+        if (setValueStat) {
+            setValueStat.style.width = calc + '%';
+        }
     }, []);
     
     return (

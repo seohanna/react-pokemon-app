@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "firebase/auth";
+import { User, getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "firebase/auth";
 import app from "../firebase";
+import storage from "../utils/storage";
 
-const initialUserData = localStorage.getItem('userData') ?
-JSON.parse(localStorage.getItem('userData')) : {}
+const initialUserData = storage.get<User>('userData');
 
 const NavBar = () => {
     const auth =  getAuth(app);
     const provider = new GoogleAuthProvider();
     const img = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png`;
     const [show, setShow] = useState(false);
-    const [userData, setUserData] = useState(initialUserData);
+    const [userData, setUserData] = useState<User | null>(initialUserData);
     const navigate = useNavigate();
     const { pathname } = useLocation();
 
@@ -33,8 +33,8 @@ const NavBar = () => {
         signInWithPopup(auth, provider)
         .then(result => {
             setUserData(result.user);
-            localStorage.setItem('userData', JSON.stringify(result.user));
-        }).catch(e => {
+            storage.set('userData', result.user);
+        }).catch(error => {
             alert(error.message);
         });
     }
@@ -55,7 +55,8 @@ const NavBar = () => {
 
     const handleLogout = () => {
         signOut(auth).then(() => {
-            setUserData({});
+            storage.remove('userData');
+            setUserData(null);
         })
         .catch(error => {
             alert(error.message);
@@ -79,10 +80,13 @@ const NavBar = () => {
                 </Login>
             ) : (
                 <SignOut>
-                    <UserImage 
-                        src={userData.photoURL}
-                        alt="photo"
-                    />
+                    {userData?.photoURL && (
+                        <UserImage 
+                            src={userData.photoURL}
+                            alt="photo"
+                        />
+                    )}
+                    
                     <Dropdown>
                         <span onClick={handleLogout}>Sign out</span>
                     </Dropdown>
@@ -94,7 +98,7 @@ const NavBar = () => {
 
 export default NavBar;
 
-const NavWrapper = styled.nav`
+const NavWrapper = styled.nav<{ show: boolean }>`
     position: fixed;
     top: 0;
     left: 0;

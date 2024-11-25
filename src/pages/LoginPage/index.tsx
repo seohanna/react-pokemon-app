@@ -1,4 +1,3 @@
-import React from "react";
 
 const LoginPage = () => {
     const img = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png`;
